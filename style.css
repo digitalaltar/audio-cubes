@@ -1,0 +1,110 @@
+html, body, canvas {
+	background: black;
+	color: white;
+	margin: 0;
+	padding: 0;
+	font-family: sans-serif;
+}
+html, body, canvas, p, select, input, button {
+	font-size: 1rem;
+}
+button, #fileInput {
+  	background: black;
+	border: none;
+	color: white;
+	padding: 5px 10px;
+	cursor: pointer;
+}
+button:hover {
+  	background-image: linear-gradient(to right, lightskyblue, hotpink);
+  	color: black;
+}
+main {
+	position: relative;
+}
+#controls {
+	position: absolute;
+	bottom: 1rem;
+	left: 2rem;
+}
+#controls button, #controls input, #controls p, #controls #statusicon {
+	display: inline-block;
+	margin-right: 1rem;
+}
+#controls p {
+	font-style: italic;
+}
+#statusicon {
+	min-width: 14px;
+}
+/* Microphone */
+.gg-mic {
+    box-sizing: border-box;
+    position: relative;
+    display: block;
+    transform: scale(var(--ggs,.7));
+    width: 16px;
+    height: 12px;
+    border-bottom-left-radius: 120px;
+    border-bottom-right-radius: 120px;
+    border: 2px solid;
+    border-top: 0;
+    margin-top: 3px
+}
+.gg-mic::after,
+.gg-mic::before {
+    content: "";
+    display: block;
+    box-sizing: border-box;
+    position: absolute
+}
+.gg-mic::after {
+    border: 2px solid;
+    width: 8px;
+    height: 18px;
+    left: 2px;
+    top: -10px;
+    border-radius: 4px
+}
+.gg-mic::before {
+    width: 10px;
+    height: 4px;
+    top: 12px;
+    left: 1px;
+    border-right: 4px solid transparent;
+    box-shadow:
+        0 2px 0,
+        inset -2px 0 0
+}
+/* Music */
+.gg-music,
+.gg-music::after,
+.gg-music::before {
+    display: block;
+    box-sizing: border-box;
+    border: 2px solid
+}
+.gg-music {
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-bottom: 0;
+    margin-top: -4px;
+    position: relative;
+    transform: skewY(-15deg) scale(var(--ggs,1));
+    width: 14px;
+    height: 16px
+}
+.gg-music::after,
+.gg-music::before {
+    content: "";
+    position: absolute;
+    width: 7px;
+    height: 7px;
+    top: 9px;
+    left: -7px;
+    transform: skewY(15deg);
+    border-radius: 10px
+}
+.gg-music::after {
+    left: 5px
+}

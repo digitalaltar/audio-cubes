@@ -8,7 +8,8 @@ let numSelectedTextures = 5; // Number of selected textures
 let isUsingMic = true; // Flag to track whether microphone input is being used
 let audioInput; // Variable to store the audio input (microphone or file)
 let audioFileSource; // Declare audioFileSource as a global variable
-
+let fileInput; // Declare fileInput as a global variable
+let currentFileName = ''; // Global variable to store the current file name
 let musicStatusLabel; // Label to display the status of music playback
 let stopButton; // Button to stop or pause music playback
 
@@ -31,12 +32,9 @@ function setup() {
   analyser = audioContext.createAnalyser();
 
   // Create UI elements
-  let toggleButton = createButton('Switch to Music');
-  toggleButton.position(20, 20);
+  let toggleButton = createButton('Switch to File');
+  toggleButton.parent('controls');
   toggleButton.mousePressed(toggleInputMode);
-
-  musicStatusLabel = createP('Please select a local file'); // Initial status message
-  musicStatusLabel.position(20, 80);
 
   // Start microphone input by default
   startMicrophoneInput();
@@ -52,7 +50,7 @@ function toggleInputMode() {
     // Stop music if it's currently playing
     if (audioInput && !audioInput.paused) {
       audioInput.pause();
-      musicStatusLabel.html('Music playback stopped'); // Update status message
+      musicStatusLabel.html('Audio playback stopped'); // Update status message
       if (stopButton) stopButton.remove(); // Remove stop button if it exists
     }
     startMicrophoneInput(); // Restart microphone input
@@ -63,12 +61,33 @@ function toggleInputMode() {
   isUsingMic = !isUsingMic; // Toggle input mode
 
   if (isUsingMic) {
-    this.html('Switch to Music'); // Change button text
+    this.html('Switch to File'); // Change button text
+    let fileInputToRemove = select('#inputfile'); // Select the file input element by id
+    if (fileInputToRemove) {
+      fileInputToRemove.remove(); // Remove the file input with id "test"
+    }
+    let toggleMusicToRemove = select('#togglemusic'); // Select the file input element by id
+    if (toggleMusicToRemove) {
+      toggleMusicToRemove.remove(); // Remove the file input with id "test"
+    }
+    let musicStatusToRemove = select('#musicstatus'); // Select the file input element by id
+    if (musicStatusToRemove) {
+      musicStatusToRemove.remove(); // Remove the file input with id "test"
+    }
+    document.getElementById('statusicon').classList.remove('gg-music');
+    document.getElementById('statusicon').classList.add('gg-mic');
   } else {
     // Prompt user to select an audio file
     let fileInput = createFileInput(handleFile);
-    fileInput.position(20, 50);
+    fileInput.id('inputfile');
+    fileInput.parent('controls');
     this.html('Switch to Mic'); // Change button text
+
+    musicStatusLabel = createP('Please select a local mp3 or wav file'); // Initial status message
+    musicStatusLabel.id('musicstatus')
+    musicStatusLabel.parent('controls');
+    document.getElementById('statusicon').classList.remove('gg-mic');
+    document.getElementById('statusicon').classList.add('gg-music');
   }
 }
 
@@ -110,16 +129,17 @@ function startAudioFilePlayback(audioInput) {
 
 function handleFile(file) {
   if (file.type === 'audio') {
+    currentFileName = file.name; // Store the file name
     audioInput = new Audio(file.data);
     audioInput.addEventListener('loadedmetadata', () => {
       startAudioFileInput(audioInput);
-      musicStatusLabel.html('Now playing: ' + file.name); // Update status message
+      musicStatusLabel.html('Now playing: ' + currentFileName); // Update status message
+      musicStatusLabel.style('color', 'white'); // Set text color to white
       createStopButton(); // Create stop button when music starts playing
     });
-  } else {
-    alert('Please select an audio file.');
   }
 }
+
 
 function startAudioFileInput(audioInput) {
   if (audioInput) {
@@ -152,20 +172,28 @@ function stopAudioFileInput() {
   }
 }
 
-function createStopButton() {
-  stopButton = createButton('Stop'); // Stop button
-  stopButton.position(20, 110);
-  stopButton.mousePressed(toggleMusic); // Change to toggleMusic function
+function toggleMusic() {
+  console.log("Toggle music function called"); // Log that the function is being called
+  
+  if (audioInput.paused) {
+    console.log("Audio is paused, playing now");
+    audioInput.play();
+    stopButton.html('Stop Audio');
+    musicStatusLabel.html('Now playing: ' + currentFileName); // Update label when music plays
+  } else {
+    console.log("Audio is playing, pausing now");
+    audioInput.pause();
+    stopButton.html('Play Audio');
+    musicStatusLabel.html('Audio playback stopped');
+  }
 }
 
-function toggleMusic() {
-  if (audioInput.paused) {
-    audioInput.play(); // Play music if paused
-    stopButton.html('Stop'); // Change button text to "Stop"
-  } else {
-    audioInput.pause(); // Pause music if playing
-    stopButton.html('Play'); // Change button text to "Play"
-  }
+
+function createStopButton() {
+  stopButton = createButton('Stop Audio'); // Stop button
+  stopButton.id('togglemusic');
+  stopButton.parent('controls');
+  stopButton.mousePressed(toggleMusic); // Change to toggleMusic function
 }
 
 function generateRandomIndices(total, count) {
@@ -183,7 +211,7 @@ function stopMusic() {
   if (audioInput) {
     audioInput.pause(); // Pause music playback
     audioInput.currentTime = 0; // Reset playback position to start
-    musicStatusLabel.html('Music playback stopped'); // Update status message
+    musicStatusLabel.html('Audio playback stopped'); // Update status message
   }
 }
 
